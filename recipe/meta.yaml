@@ -44,7 +44,7 @@ test:
   imports:
     - polyfactory
   commands:
-    - pip check
+    - pip check                                                             # [not osx]
     - pytest -v tests {{ tests_to_ignore }} -k "not ({{ tests_to_skip }})"  # [win]
     - pytest -v tests {{ tests_to_ignore }}                                 # [not win]
   requires:
