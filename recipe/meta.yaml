@@ -31,7 +31,11 @@ requirements:
 {% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_msgspec_factory.py" %}
 # type error
 {% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_recursive_models.py" %}
-
+# OSError: Invalid argument
+{% set tests_to_skip = tests_to_skip + " test_handle_constrained_date[ge-le]"%}
+{% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[gt-lt]"%}
+{% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[ge-lt]"%}
+{% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[gt-le]"%}
 
 test:
   source_files:
@@ -41,8 +45,7 @@ test:
   commands:
       # skipping for osx due to pymongo platform tag error
     - pip check                                                             # [not osx]
-    #- pytest -v tests {{ tests_to_ignore }} -k "not ({{ tests_to_skip }})"  # [win]
-    - pytest -v tests {{ tests_to_ignore }}  # [win]
+    - pytest -v tests {{ tests_to_ignore }} -k "not ({{ tests_to_skip }})"  # [win]
     - pytest -v tests {{ tests_to_ignore }}                                 # [not win]
   requires:
     - pip
