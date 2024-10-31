@@ -44,6 +44,7 @@ test:
   imports:
     - polyfactory
   commands:
+      # skipping for osx due to pymongo platform tag error
     - pip check                                                             # [not osx]
     - pytest -v tests {{ tests_to_ignore }} -k "not ({{ tests_to_skip }})"  # [win]
     - pytest -v tests {{ tests_to_ignore }}                                 # [not win]
