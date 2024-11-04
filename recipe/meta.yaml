@@ -23,6 +23,9 @@ requirements:
     - python
     - faker
     - typing-extensions >=4.6.0
+  run_constrained:
+    - sqlalchemy >=1.4.29
+    - attrs >=22.2.0
 
 {% set tests_to_skip = "" %} 
 {% set tests_to_ignore = "" %}
