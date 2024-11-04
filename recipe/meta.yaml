@@ -26,9 +26,6 @@ requirements:
 
 {% set tests_to_skip = "" %} 
 {% set tests_to_ignore = "" %}
-# requires msgspec
-{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_optional_model_field_inference.py" %}
-{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_msgspec_factory.py" %}
 # type error
 {% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_recursive_models.py" %}
 # OSError: Invalid argument
@@ -58,6 +55,7 @@ test:
     - aiosqlite
     - email_validator
     - annotated-types
+    - msgspec
 
 about:
   home: https://github.com/litestar-org/polyfactory
