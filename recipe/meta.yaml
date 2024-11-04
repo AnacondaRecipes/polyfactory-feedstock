@@ -26,6 +26,8 @@ requirements:
   run_constrained:
     - sqlalchemy >=1.4.29
     - attrs >=22.2.0
+    - odmantic <1.0.0
+    - email-validator >=2.0.0 
 
 {% set tests_to_skip = "" %} 
 {% set tests_to_ignore = "" %}
