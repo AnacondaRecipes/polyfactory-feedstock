@@ -27,17 +27,18 @@ requirements:
     - sqlalchemy >=1.4.29
     - attrs >=22.2.0
     - odmantic <1.0.0
-    - email-validator >=2.0.0 
 
 {% set tests_to_skip = "" %} 
 {% set tests_to_ignore = "" %}
 # type error
 {% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_recursive_models.py" %}
 # OSError: Invalid argument
-{% set tests_to_skip = tests_to_skip + " test_handle_constrained_date[ge-le]"%}
-{% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[gt-lt]"%}
-{% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[ge-lt]"%}
-{% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[gt-le]"%}
+{% set tests_to_skip = tests_to_skip + " test_handle_constrained_date[ge-le]" %}
+{% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[gt-lt]" %}
+{% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[ge-lt]" %}
+{% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[gt-le]" %}
+# email_validator not up to date
+{% set tests_to_skip = tests_to_skip + " or test_type_property_parsing" %}
 
 test:
   source_files:
@@ -46,9 +47,9 @@ test:
     - polyfactory
   commands:
       # skipping for osx due to pymongo platform tag error
-    - pip check                                                             # [not osx]
-    - pytest -v tests {{ tests_to_ignore }} -k "not ({{ tests_to_skip }})"  # [win]
-    - pytest -v tests {{ tests_to_ignore }}                                 # [not win]
+    - pip check                                                                       # [not osx]
+    - pytest -v tests {{ tests_to_ignore }} -k "not ({{ tests_to_skip }})"            # [win]
+    - pytest -v tests {{ tests_to_ignore }} -k "not test_type_property_parsing"       # [not win]
   requires:
     - pip
     - pytest
@@ -58,7 +59,6 @@ test:
     - bson
     - pymongo
     - aiosqlite
-    - email_validator
     - annotated-types
     - msgspec
 
