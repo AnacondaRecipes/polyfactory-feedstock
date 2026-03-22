@@ -50,8 +50,7 @@ test:
   imports:
     - polyfactory
   commands:
-      # skipping for osx due to pymongo platform tag error
-    - pip check                                                                       # [not osx]
+    - pip check
     - pytest -v tests {{ tests_to_ignore }} -k "not ({{ tests_to_skip }})"            # [win]
     - pytest -v tests {{ tests_to_ignore }} -k "not test_type_property_parsing"       # [not win]
   requires:
@@ -61,7 +60,6 @@ test:
     - sqlalchemy
     - hypothesis
     - pydantic
-    - bson
     - pymongo
     - aiosqlite
     - annotated-types
