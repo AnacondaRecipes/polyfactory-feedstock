@@ -64,8 +64,7 @@ test:
     - polyfactory
   commands:
     - pip check
-    - pytest -v tests {{ tests_to_ignore }} -k "not ({{ tests_to_skip }})"            # [win]
-    - pytest -v tests {{ tests_to_ignore }} -k "not ({{ tests_to_skip }})"             # [not win]
+    - pytest -v tests {{ tests_to_ignore }} -k "not ({{ tests_to_skip }})"
   requires:
     - pip
     - pytest
