@@ -36,6 +36,10 @@ requirements:
 {% set tests_to_ignore = "" %}
 # type error
 {% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_recursive_models.py" %}
+# attrs, beanie not available in defaults
+{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_attrs_factory.py" %}
+{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_beanie_factory.py" %}
+{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_optional_model_field_inference.py" %}
 # OSError: Invalid argument
 {% set tests_to_skip = tests_to_skip + " test_handle_constrained_date[ge-le]" %}
 {% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[gt-lt]" %}
