@@ -1,5 +1,8 @@
 staging_channel_upload_target: evidently-bootstrap
 
+channels:
+  - https://staging.continuum.io/pbp/evidently-bootstrap
+
 build_parameters:
   - "--no-skip-existing"
 
