@@ -1,4 +1,7 @@
 staging_channel_upload_target: evidently-bootstrap
 
+build_parameters:
+  - "--no-skip-existing"
+
 build_env_vars:
   ANACONDA_ROCKET_ENABLE_PY314: yes
