@@ -43,6 +43,11 @@ requirements:
 {% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_attrs_factory.py" %}
 {% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_beanie_factory.py" %}
 {% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_optional_model_field_inference.py" %}
+# bson (via pymongo) is imported at collection time by this module; pymongo has no
+# py3.14 build on pkgs/main, so the test env omits it there
+{% if py|int >= 314 %}
+{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_odmantic_factory.py" %}
+{% endif %}
 # OSError: Invalid argument
 {% set tests_to_skip = tests_to_skip + " test_handle_constrained_date[ge-le]" %}
 {% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[gt-lt]" %}
@@ -78,8 +83,9 @@ test:
     - sqlalchemy
     - hypothesis
     - pydantic
-    # pymongo's only consumer is tests/test_beanie_factory.py, which is --ignore'd
-    # (beanie is not in defaults); pymongo 4.8.0 has no py3.14 build on pkgs/main
+    # bson (pymongo) is imported at collection time by tests/test_odmantic_factory.py;
+    # pymongo has no py3.14 build on pkgs/main, so it is omitted there (test ignored above)
+    - pymongo  # [py<314]
     - aiosqlite
     - annotated-types
     - msgspec
