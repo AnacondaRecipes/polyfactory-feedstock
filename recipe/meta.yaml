@@ -78,7 +78,8 @@ test:
     - sqlalchemy
     - hypothesis
     - pydantic
-    - pymongo
+    # pymongo's only consumer is tests/test_beanie_factory.py, which is --ignore'd
+    # (beanie is not in defaults); pymongo 4.8.0 has no py3.14 build on pkgs/main
     - aiosqlite
     - annotated-types
     - msgspec
