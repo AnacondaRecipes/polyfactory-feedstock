@@ -63,6 +63,9 @@ requirements:
 test:
   source_files:
     - tests
+    # upstream's [tool.pytest.ini_options] sets asyncio_mode=auto; without it the
+    # async sqlalchemy tests ERROR at setup ("async fixture with no plugin")
+    - pyproject.toml
   imports:
     - polyfactory
   commands:
