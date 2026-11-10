@@ -35,6 +35,13 @@ requirements:
     - eval-type-backport >=0.2.2
     - pydantic >=1.10
 
+{% set tests_to_skip = "" %}
+# OSError: Invalid argument calling dt.datetime.fromtimestamp(timestamp, tzinfo) on windows
+{% set tests_to_skip = tests_to_skip + " test_handle_constrained_date[ge-le]" %}
+{% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[gt-lt]" %}
+{% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[ge-lt]" %}
+{% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[gt-le]" %}
+
 {% set tests_to_ignore = "" %}
 # we do not provide beanie on main
 {% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_beanie_factory.py" %}
@@ -51,7 +58,7 @@ test:
     - polyfactory
   commands:
     - pip check
-    - pytest -v tests {{ tests_to_ignore }}
+    - pytest -v tests {{ tests_to_ignore }} -k "not ({{ tests_to_skip }})"
   requires:
     - pip
     - pytest
