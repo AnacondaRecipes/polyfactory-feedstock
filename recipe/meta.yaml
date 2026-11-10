@@ -1,5 +1,5 @@
 {% set name = "polyfactory" %}
-{% set version = "3.3.0" %}
+{% set version = "3.5.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 237258b6ff43edf362ffd1f68086bb796466f786adfa002b0ac256dbf2246e9a
+  sha256: 78a1e4cf8f317be7da7c111d661f39db35080ec9c12b8df7c01dfbbc1c17250f
 
 build:
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
@@ -23,6 +23,9 @@ requirements:
     - python
     - faker >=5.0.0
     - typing-extensions >=4.6.0
+  # run_constrained translates every bounded [project.optional-dependencies] extra from
+  # upstream pyproject.toml (sqlalchemy, pydantic, msgspec, odmantic, beanie->pymongo,
+  # attrs); beanie and full extras are unversioned upstream, so they are no-ops here.
   run_constrained:
     - sqlalchemy >=1.4.29
     - attrs >=22.2.0
@@ -32,34 +35,25 @@ requirements:
     - eval-type-backport >=0.2.2
     - pydantic >=1.10
 
-{% set tests_to_skip = "" %} 
-{% set tests_to_ignore = "" %}
-# type error
-{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_recursive_models.py" %}
-# attrs, beanie not available in defaults
-{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_attrs_factory.py" %}
-{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_beanie_factory.py" %}
-{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_optional_model_field_inference.py" %}
-# OSError: Invalid argument
+{% set tests_to_skip = "" %}
+# OSError: Invalid argument calling dt.datetime.fromtimestamp(timestamp, tzinfo) on windows
 {% set tests_to_skip = tests_to_skip + " test_handle_constrained_date[ge-le]" %}
 {% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[gt-lt]" %}
 {% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[ge-lt]" %}
 {% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[gt-le]" %}
-# email_validator not up to date
-{% set tests_to_skip = tests_to_skip + " or test_type_property_parsing" %}
-# pydantic v1 compat test broken (EmailStr/AnyUrl import mismatch)
-{% set tests_to_skip = tests_to_skip + " or test_build_v1_with_url_and_email_types" %}
-# async sqlalchemy tests need async driver not properly available
-{% set tests_to_skip = tests_to_skip + " or test_async_persistence" %}
-{% set tests_to_skip = tests_to_skip + " or test_computed_column_async_persistence" %}
-{% set tests_to_skip = tests_to_skip + " or test_async_persistence_method_flush" %}
-{% set tests_to_skip = tests_to_skip + " or test_async_server_default_refresh" %}
-# sqlalchemy persistence config test expects different error behavior
-{% set tests_to_skip = tests_to_skip + " or test_invalid_persistence_config_raises" %}
+
+{% set tests_to_ignore = "" %}
+# we do not provide beanie on main
+{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_beanie_factory.py" %}
+# we do not provide odmantic on main
+{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_odmantic_factory.py" %}
 
 test:
   source_files:
     - tests
+    # upstream's [tool.pytest.ini_options] sets asyncio_mode=auto; without it the
+    # async sqlalchemy tests ERROR at setup ("async fixture with no plugin")
+    - pyproject.toml
   imports:
     - polyfactory
   commands:
@@ -72,10 +66,11 @@ test:
     - sqlalchemy
     - hypothesis
     - pydantic
-    - pymongo
     - aiosqlite
     - annotated-types
     - msgspec
+    - attrs
+    - email-validator
 
 about:
   home: https://github.com/litestar-org/polyfactory
