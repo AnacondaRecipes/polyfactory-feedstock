@@ -35,30 +35,11 @@ requirements:
     - eval-type-backport >=0.2.2
     - pydantic >=1.10
 
-{% set tests_to_skip = "" %} 
 {% set tests_to_ignore = "" %}
-# type error
-{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_recursive_models.py" %}
-# attrs, beanie not available in defaults
-{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_attrs_factory.py" %}
+# we do not provide beanie on main
 {% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_beanie_factory.py" %}
-{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_optional_model_field_inference.py" %}
-# OSError: Invalid argument
-{% set tests_to_skip = tests_to_skip + " test_handle_constrained_date[ge-le]" %}
-{% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[gt-lt]" %}
-{% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[ge-lt]" %}
-{% set tests_to_skip = tests_to_skip + " or test_handle_constrained_date[gt-le]" %}
-# email_validator not up to date
-{% set tests_to_skip = tests_to_skip + " or test_type_property_parsing" %}
-# pydantic v1 compat test broken (EmailStr/AnyUrl import mismatch)
-{% set tests_to_skip = tests_to_skip + " or test_build_v1_with_url_and_email_types" %}
-# async sqlalchemy tests need async driver not properly available
-{% set tests_to_skip = tests_to_skip + " or test_async_persistence" %}
-{% set tests_to_skip = tests_to_skip + " or test_computed_column_async_persistence" %}
-{% set tests_to_skip = tests_to_skip + " or test_async_persistence_method_flush" %}
-{% set tests_to_skip = tests_to_skip + " or test_async_server_default_refresh" %}
-# sqlalchemy persistence config test expects different error behavior
-{% set tests_to_skip = tests_to_skip + " or test_invalid_persistence_config_raises" %}
+# we do not provide odmantic on main
+{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/test_odmantic_factory.py" %}
 
 test:
   source_files:
@@ -70,10 +51,7 @@ test:
     - polyfactory
   commands:
     - pip check
-    # bson (via pymongo) is imported at collection time by tests/test_odmantic_factory.py;
-    # pymongo has no py3.14 build on pkgs/main, so that module is ignored on py3.14
-    - pytest -v tests {{ tests_to_ignore }} -k "not ({{ tests_to_skip }})"  # [py<314]
-    - pytest -v tests {{ tests_to_ignore }} --ignore=tests/test_odmantic_factory.py -k "not ({{ tests_to_skip }})"  # [py>=314]
+    - pytest -v tests {{ tests_to_ignore }}
   requires:
     - pip
     - pytest
@@ -81,12 +59,11 @@ test:
     - sqlalchemy
     - hypothesis
     - pydantic
-    # bson (pymongo) is imported at collection time by tests/test_odmantic_factory.py;
-    # pymongo has no py3.14 build on pkgs/main, so it is omitted there (test ignored above)
-    - pymongo  # [py<314]
     - aiosqlite
     - annotated-types
     - msgspec
+    - attrs
+    - email-validator
 
 about:
   home: https://github.com/litestar-org/polyfactory
